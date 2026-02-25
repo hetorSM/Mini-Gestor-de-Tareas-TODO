@@ -37,7 +37,7 @@
                  x-data="{ showDescription: false }"
                  @click="showDescription = !showDescription">
                 <div class="flex items-start gap-3 flex-1">
-                    <input type="checkbox" wire:change="toggleCompleted({{ $task->id }})" @click.stop @checked($task->completed) class="mt-1">
+                    <input type="checkbox" wire:click.stop="toggleCompleted({{ $task->id }})" @checked($task->completed) class="mt-1 w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
 
                     <div class="flex-1">
                         <div class="flex items-center gap-2">
@@ -71,8 +71,8 @@
                 </div>
 
                 <div class="flex gap-2">
-                    <button @click.stop wire:click="editTask({{ $task->id }})" class="text-blue-500 hover:text-blue-700 p-1">✏️</button>
-                    <button @click.stop onclick="confirm('¿Eliminar tarea?') || event.stopImmediatePropagation()" wire:click="deleteTask({{ $task->id }})" class="text-red-500 hover:text-red-700 p-1">🗑️</button>
+                    <button wire:click.stop="editTask({{ $task->id }})" class="text-blue-500 hover:text-blue-700 p-1 transition-colors" title="{{ __('Editar') }}">✏️</button>
+                    <button wire:click.stop="deleteTask({{ $task->id }})" wire:confirm="{{ __('¿Estás seguro de eliminar esta tarea?') }}" class="text-red-500 hover:text-red-700 p-1 transition-colors" title="{{ __('Eliminar') }}">🗑️</button>
                 </div>
             </div>
         @endforeach
