@@ -270,7 +270,14 @@ sail artisan pest:install
 Ejecutar los tests:
 
 ```bash
+# Si usas Sail (Docker)
 sail artisan test
+
+# O usando el binario de Pest directamente
+sail bin/pest
+
+# Si NO usas Docker (ejecución local)
+php artisan test
 ```
 
 ---
