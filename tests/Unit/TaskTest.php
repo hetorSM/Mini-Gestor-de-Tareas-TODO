@@ -3,8 +3,9 @@
 use App\Models\Category;
 use App\Models\Task;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-uses(RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 test('a task can be created', function () {
     $task = Task::create([

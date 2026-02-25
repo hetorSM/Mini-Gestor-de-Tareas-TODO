@@ -4,8 +4,9 @@ use App\Livewire\TaskManager;
 use App\Models\Task;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Tests\TestCase;
 
-uses(RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 test('renders successfully', function () {
     Livewire::test(TaskManager::class)
