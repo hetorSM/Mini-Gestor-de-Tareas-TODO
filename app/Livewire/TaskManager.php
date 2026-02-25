@@ -2,20 +2,29 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Models\Task;
 use App\Models\Category;
+use App\Models\Task;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 class TaskManager extends Component
 {
     public $tasks;
+
     public $filter = 'all';
+
     public $search = '';
+
     public $showModal = false;
+
     public $editingTask = null;
+
     public $title = '';
+
     public $description = '';
+
     public $category_id = '';
+
     public $categories;
 
     protected function rules()
@@ -43,8 +52,8 @@ class TaskManager extends Component
             $query->where('completed', true);
         }
 
-        if (!empty($this->search)) {
-            $query->where('title', 'like', '%' . $this->search . '%');
+        if (! empty($this->search)) {
+            $query->where('title', 'like', '%'.$this->search.'%');
         }
 
         $this->tasks = $query->latest()->get();
@@ -109,14 +118,15 @@ class TaskManager extends Component
 
     public function toggleCompleted($taskId)
     {
-        $task = Task::find($taskId);
-        $task->completed = !$task->completed;
+        $task = Task::findOrFail($taskId);
+        $task->completed = ! $task->completed;
         $task->save();
         $this->loadTasks();
     }
 
+    #[Layout('layouts.app')]
     public function render()
     {
-        return view('livewire.task-manager')->layout('layouts.app');
+        return view('livewire.task-manager');
     }
 }
