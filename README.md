@@ -388,6 +388,32 @@ Abrir en el navegador: **[http://localhost](http://localhost)**
 
 ---
 
+## Consideraciones y Solución de Errores Comunes
+
+Durante el desarrollo de la prueba técnica, nos encontramos con algunos errores de integración entre las librerías modernas utilizadas (Livewire 3, Alpine 3 y Pest). Dejamos constancia de las soluciones para evitar futuros bloqueos:
+
+### 1. Interferencia entre Alpine.js y eventos de Livewire 3 (`@click.stop` vs `wire:click.stop`)
+
+Cuando usamos Alpine.js para abrir/cerrar un desplegable (ej. clickeando la fila de una tabla de tareas) y colocamos botones de acción de Livewire dentro de ella (ej. "Editar" o "Eliminar"), es tentador usar `@click.stop` en el botón para que la fila no se expanda.
+**Problema:** Livewire 3 escucha eventos a nivel global del DOM. Si Alpine detiene de golpe la propagación del clic con `@click.stop`, Livewire nunca se entera y el botón (ej. `wire:click="deleteTask"`) deja de funcionar mágicamente.
+**Solución:** En lugar del modificador de Alpine, se debe usar el modificador de Livewire: **`wire:click.stop="nombreFuncion"`**. Esto permite que Livewire procese la petición en backend y, al mismo tiempo, frena el evento de clics anidados del frontend.
+
+### 2. Inicialización duplicada de Alpine.js con Livewire 3
+
+**Problema:** En proyectos tradicionales de Laravel + Alpine, típicamente se hace la inicialización manual abriendo `resources/js/app.js` y usando `Alpine.start()`. Sin embargo, Livewire 3 **ya inyecta e inicializa Alpine.js automáticamente**. Si tú inicializas Alpine manualmente en `app.js` y usas componentes Livewire en la misma pantalla, surgirán conflictos silenciosos de estado global y los botones del backend dejarán de responder.
+**Solución:** No hacer `import Alpine from 'alpinejs'` ni `Alpine.start()` en `resources/js/app.js` si tu proyecto usa Livewire 3. Deja que Livewire controle el ciclo de vida de Alpine por sí solo.
+
+### 3. Pest Tests fallando por base de datos (Problema de Conexión)
+
+Al ejecutar pruebas Unitarias y de Feature con Pest en local usando bases de datos en memoria (SQLite), es posible toparse con el error `Call to a member function connection() on null`.
+**Problema:** Ocurre cuando el entorno de Testing de Laravel no arranca completamente en un archivo Pest antes de ejecutar un modelo.
+**Solución:**
+
+1. Asegurarse de que en `phpunit.xml` se esté sobrescribiendo la configuración de BD a memoria pura: `<env name="DB_CONNECTION" value="sqlite"/>` y `<env name="DB_DATABASE" value=":memory:"/>`.
+2. En la estructura de Pest `tests/Unit/..` asegurarse de hacer que el archivo inicie como TestCase nativo de Laravel para cargar el framework, añadiendo: `uses(Tests\TestCase::class, RefreshDatabase::class);`.
+
+---
+
 ## Estructura del Proyecto
 
 ```
