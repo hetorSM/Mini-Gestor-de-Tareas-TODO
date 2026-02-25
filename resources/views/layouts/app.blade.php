@@ -9,7 +9,7 @@
     @livewireStyles
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors">
     <main class="container mx-auto py-6">
         {{ $slot }}
     </main>

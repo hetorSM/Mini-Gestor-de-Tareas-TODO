@@ -21,7 +21,7 @@ class TaskManager extends Component
 
     public $title = '';
 
-    public $description = '';
+    public $description = null;
 
     public $category_id = '';
 
@@ -40,6 +40,12 @@ class TaskManager extends Component
     {
         $this->categories = Category::all();
         $this->loadTasks();
+    }
+
+    public function resetCreateModal()
+    {
+        $this->reset(['title', 'description', 'category_id', 'editingTask']);
+        $this->showModal = true;
     }
 
     public function loadTasks()
@@ -75,13 +81,13 @@ class TaskManager extends Component
 
         Task::create([
             'title' => $this->title,
-            'description' => $this->description ?: null,
+            'description' => null,
             'category_id' => $this->category_id ?: null,
         ]);
 
         $this->reset(['title', 'description', 'category_id', 'showModal']);
         $this->loadTasks();
-        session()->flash('message', 'Tarea creada correctamente.');
+        $this->dispatch('toast', message: 'Tarea creada correctamente.');
     }
 
     public function editTask($taskId)
@@ -106,14 +112,14 @@ class TaskManager extends Component
 
         $this->reset(['title', 'description', 'category_id', 'editingTask', 'showModal']);
         $this->loadTasks();
-        session()->flash('message', 'Tarea actualizada correctamente.');
+        $this->dispatch('toast', message: 'Tarea actualizada correctamente.');
     }
 
     public function deleteTask($taskId)
     {
         Task::destroy($taskId);
         $this->loadTasks();
-        session()->flash('message', 'Tarea eliminada.');
+        $this->dispatch('toast', message: 'Tarea eliminada.');
     }
 
     public function toggleCompleted($taskId)
